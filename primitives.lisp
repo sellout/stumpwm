@@ -591,6 +591,10 @@ positive direction."
             (+ inc max)
             min))))
 
+(defun get-overlap (s1 l1 s2 l2)
+  "Calculate the overlap between two lines on a one-dimensional scale"
+  (- (min (+ s1 l1) (+ s2 l2)) (max s1 s2)))
+
 (defun remove-plist (plist &rest keys)
   "Remove the keys from the plist.
 Useful for re-using the &REST arg after removing some options."
