@@ -15,86 +15,91 @@ Build & Start Stumpwm
 Prerequisites
 =============
 
-* a common lisp distribution. CCL, CLISP, and SBCL all work.
+* a common lisp distribution.  sbcl, clisp and ccl all work.
+* asdf
 * clx
 * cl-ppcre
 
-If you intend to use SBCL or CCL you need to install portable-clx. If
-you're using clisp, make sure you use at least version 2.42 and that
-clisp is compiled with new-clx. As of clisp 2.42, new-clx works fine
-with stumpwm. Any version before that is too buggy to run stumpwm.
+sbcl and ccl are both bundled with asdf but require portable-clx and
+cl-ppcre to be installed separately.  clisp (at least version 2.42
+required) should be built with new-clx and requires you to install
+asdf and cl-ppcre separately.
 
-You can use asdf-install to install lisp libraries:
-  $ sbcl
-    * (require 'asdf)
-    * (require 'asdf-install)
-    * (asdf-install:install 'clx)
-    * (asdf-install:install 'cl-ppcre)
+If you have previous experience with cl and asdf, you just need to
+make sure that the above libraries are installed and available to
+asdf.  Alternatively, your operating system distribution may have the
+libraries available as packages.  Otherwise, follow the instructions
+below:
 
-If using clisp, you'll need to install asdf first to use asdf-install.
-  $ mkdir -p ~/.cl/asdf && cd ~/.cl
-  $ wget http://cclan.cvs.sourceforge.net/*checkout*/cclan/asdf/asdf.lisp -O ~/.cl/asdf/asdf.lisp
-  $ echo "(load #p\"/home/USER/.cl/asdf/asdf\")" >> ~/.clisprc.lisp
-  $ mkdir -p ~/.cl/systems
-  $ echo "(push #p\"/home/USER/.cl/systems\" asdf:*central-registry*)" >> ~/.clisprc.lisp
-  $ wget http://common-lisp.net/project/asdf-install/asdf-install_latest.tar.gz
-  $ tar xf asdf-install_latest.tar.gz
-  $ ln -s ~/.cl/asdf-install/asdf-install/asdf-install.asd ~/.cl/systems/
-  $ clisp
-    * (asdf:operate 'asdf:compile-op 'asdf-install)
-    * (asdf:operate 'asdf:load-op 'asdf-install)
-    * (asdf-install:install :cl-ppcre)
+ mkdir -p ~/src ~/.asdf
 
-CCL has asdf built in, but you will need to get asdf-install like with clisp.
+Install asdf (clisp only)
 
-Your operating system distribution may also have these libraries
-available.
+ cd ~/src
+ wget http://common-lisp.net/project/asdf/asdf.tar.gz
+ tar -xzf asdf.tar.gz
+ echo '(load #p"~/src/asdf/asdf")' >> ~/.clisprc.lisp
+
+Configure asdf
+
+sbcl: echo '(push (merge-pathnames #p".asdf/" (user-homedir-pathname)) asdf:*central-registry*)' >> ~/.sbclrc
+ccl: echo '(push #p"~/.asdf/" asdf:*central-registry*)' >> ~/.ccl-init.lisp
+clisp: echo '(push #p"~/.asdf/" asdf:*central-registry*)' >> ~/.clisprc.lisp
+
+Install clx (sbcl and ccl only)
+
+ cd ~/src
+ wget http://ftp.linux.org.uk/pub/lisp/sbcl/clx_0.7.3.tar.gz
+ tar -xzf clx_0.7.3.tar.gz
+ cd ~/.asdf && ln -s ~/src/clx_0.7.3/clx.asd
+
+Install cl-pprce (all)
+
+ cd ~/src
+ wget http://weitz.de/files/cl-ppcre.tar.gz
+ tar -xzf cl-ppcre.tar.gz
+ cd ~/.asdf && ln -s ~/src/cl-ppcre/cl-ppcre.asd
 
 Building
 ========
 
-Building stumpwm from CVS requires that you build the configure script:
+Building stumpwm from git requires that you build the configure script:
 
-$ autoconf
+ autoconf
 
 If there's already a configure script then just run it.
 
-$ ./configure
+ ./configure
 
-By default stumpwm elects sbcl. If you have both installed, you can
-explicitly select clisp like so:
+By default stumpwm elects sbcl.  If you have multiple lisps installed,
+you can explicitly select ccl or clisp like so:
 
-$ ./configure --with-lisp=clisp
+ ./configure --with-lisp=clisp
+ ./configure --with-lisp=ccl
 
-If your lisps are in strange places you may need to tell the script where to find them:
+If your lisps are in strange places you may need to tell the script
+where to find them:
 
-$ configure --with-sbcl=/home/sabetts/opt/bin/sbcl --with-clisp=/usr/local/downstairs/to/the/left/clisp
+ ./configure --with-sbcl=/home/sabetts/opt/bin/sbcl
+ ./configure --with-clisp=/usr/local/downstairs/to/the/left/clisp
+ ./configure --with-ccl=/somewhere/else/ccl
 
 Now build it:
 
-$ make
+ make
 
-If all goes well, you should have a stumpwm binary now. Sorry there's
-no install yet. Just copy the binary wherever you want or run it out
-of the stumpwm/ directory. If autoconf worked properly, you can
-install the binary, along with the .info documentation with:
+If all goes well, you should have a stumpwm binary now.  You can run
+the binary from where it is or install it, along with the .info
+documentation, with:
 
-$ make install
+ make install
 
 Now that you have a binary, call it from your ~/.xinitrc file:
 
-$ echo /path/to/stumpwm >> ~/.xinitrc
-$ startx
+ echo /path/to/stumpwm >> ~/.xinitrc
+ startx
 
 Hopefully that will put you in X running stumpwm!
-
-SBCL And Threads
-----------------
-
-SBCL compiled with threads causes problems with stumpwm. The most
-common is sluggishness. It may also cause stumpwm to become
-unresponsive. If you use SBCL, consider using a version built without
-threads.
 
 CCL And Virtual Memory
 ----------------------
@@ -108,16 +113,16 @@ Help
 ----
 
 There's a texinfo manual, stumpwm.texi. the build scripts generate an
-info file you can read in emacs or with the `info' program.
+info file you can read in emacs or with the `info' program.  The
+manual for the latest release is available to read online at:
+
+http://www.nongnu.org/stumpwm/manual/stumpwm.html
 
 For other stuff visit the stumpwm wiki:
 
 http://stumpwm.antidesktop.net/
 
 There's a #stumpwm channel on irc.freenode.net, too.
-
-Questions?
-----------
 
 See http://stumpwm.nongnu.org/community.html for more information on
 contacting stumpwm developers and users.
