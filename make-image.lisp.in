@@ -15,12 +15,6 @@
 
 ;;; CLISP
 
-;; Is there a better way to use asdf.lisp than including it with stumpwm?
-#+clisp
-(progn
-  (require 'asdf '("asdf.lisp"))
-  (load "stumpwm.asd")
-  (load "@PPCRE_PATH@/cl-ppcre.asd"))
 #+clisp
 (progn
   (asdf:oos 'asdf:load-op 'stumpwm))
@@ -34,14 +28,10 @@
 
 ;;; OPENMCL
 
-;; Is there a better way to use asdf.lisp than including it with stumpwm?
 #+openmcl
 (progn
   (require 'asdf)
-  (load "stumpwm.asd"))
-#+openmcl
-(progn
-  (asdf:oos 'asdf:load-op 'stumpwm))
+  (require 'stumpwm))
 #+openmcl
 (progn
   (ccl:save-application "stumpwm" :prepend-kernel t :toplevel-function #'stumpwm:stumpwm))
@@ -51,7 +41,6 @@
 #+ ecl
 (progn
   (require 'asdf)
-  (load "@PPCRE_PATH@/cl-ppcre.asd"))
 #+ ecl
 (asdf:make-build 'stumpwm :type :program :monolithic t
                  :epilogue-code '(progn
