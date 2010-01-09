@@ -140,11 +140,9 @@
       ;; only absorb it if it's not already managed (it could be iconic)
       (cond
         (win (dformat 1 "map request for mapped window ~a~%" win))
-        ((eq (xwin-type window) :dock)
-         (when wwin
-           (setf screen (window-screen wwin)))
-         (dformat 1 "window is dock-type. attempting to place in mode-line.")
-         (place-mode-line-window screen window)
+        ((xwin-strut-p window)
+         (add-strut (if wwin (window-screen wwin) screen) window)
+         (apply-struts-to-heads screen)
          ;; Some panels are broken and only set the dock type after they map and withdraw.
          (when wwin
            (setf (screen-withdrawn-windows screen) (delete wwin (screen-withdrawn-windows screen))))

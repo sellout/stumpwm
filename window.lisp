@@ -593,15 +593,12 @@ and bottom_end_x."
         ;; Don't process override-redirect windows.
         (unless (or (eq (xlib:window-override-redirect win) :on)
                     (internal-window-p screen win))
-          (if (eq (xwin-type win) :dock)
-              (progn
-                (dformat 1 "Window ~S is dock-type. Placing in mode-line.~%" win)
-                (place-mode-line-window screen win))
-              (if (or (eql map-state :viewable)
-                      (eql wm-state +iconic-state+))
-                  (progn
-                    (dformat 1 "Processing ~S ~S~%" (xwin-name win) win)
-                    (process-mapped-window screen win))))))))
+          (unless (eq (xwin-type win) :dock)
+            (if (or (eql map-state :viewable)
+                    (eql wm-state +iconic-state+))
+                (progn
+                  (dformat 1 "Processing ~S ~S~%" (xwin-name win) win)
+                  (process-mapped-window screen win))))))))
   (dolist (w (screen-windows screen))
     (setf (window-state w) +normal-state+)
     (xwin-hide w)))

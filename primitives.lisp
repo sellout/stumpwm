@@ -426,7 +426,9 @@ exist, in which case they go into the current group.")
    (current-msg :initform nil :accessor screen-current-msg)
    (current-msg-highlights :initform nil :accessor screen-current-msg-highlights)
    (last-msg :initform nil :accessor screen-last-msg)
-   (last-msg-highlights :initform nil :accessor screen-last-msg-highlights)))
+   (last-msg-highlights :initform nil :accessor screen-last-msg-highlights)
+   (struts :initform nil :accessor screen-struts :documentation
+    "A list of xlib:windows that have one of the netwm strut properties set.")))
 
 (defstruct ccontext
   win

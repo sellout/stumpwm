@@ -42,6 +42,7 @@
                (:file "window-placement")
                (:file "message-window")
                (:file "selection")
+               (:file "strut")
 	       (:file "user")
                (:file "iresize")
                (:file "bindings")
